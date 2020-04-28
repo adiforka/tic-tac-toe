@@ -124,20 +124,20 @@ public class TicTacToe {
         List<Integer> cross1 = Arrays.asList(1, 5, 9);
         List<Integer> cross2 = Arrays.asList(3, 5, 7);
 
-        List<List<Integer>> winCond = new ArrayList<>();
-        winCond.add(topRow);
-        winCond.add(midRow);
-        winCond.add(botRow);
-        winCond.add(leftCol);
-        winCond.add(midCol);
-        winCond.add(rightCol);
-        winCond.add(cross1);
-        winCond.add(cross2);
+        List<List<Integer>> winConditions = new ArrayList<>();
+        winConditions.add(topRow);
+        winConditions.add(midRow);
+        winConditions.add(botRow);
+        winConditions.add(leftCol);
+        winConditions.add(midCol);
+        winConditions.add(rightCol);
+        winConditions.add(cross1);
+        winConditions.add(cross2);
 
-        for (List<Integer> winNums : winCond) {
-            if (playerPositions.containsAll(winNums)) {
+        for (List<Integer> winCondition : winConditions) {
+            if (playerPositions.containsAll(winCondition)) {
                 return "You win!";
-            } else if (cpuPositions.containsAll(winNums)) {
+            } else if (cpuPositions.containsAll(winCondition)) {
                 return "CPU wins";
             } else if (playerPositions.size() + cpuPositions.size() == 9) {
                 return "It's a tie";
