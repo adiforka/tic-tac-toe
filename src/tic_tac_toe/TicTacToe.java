@@ -112,7 +112,7 @@ public class TicTacToe {
         }
     }
 
-    public static String checkWinner() {
+    private static String checkWinner() {
 
         //win conditions
         List<Integer> topRow = Arrays.asList(1, 2, 3);
