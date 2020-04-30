@@ -18,18 +18,15 @@ public class TicTacToe {
 
     public static void main(String[] args) {
 
+        playGame();
+
+    }
+
+    public static void playGame() {
         printGameBoard();
 
-        Scanner scan = new Scanner(System.in);
-
         while (true) {
-            System.out.println("Enter a your placement 1-9: ");
-            int playerPos = scan.nextInt();
-            while (playerPositions.contains(playerPos) || cpuPositions.contains(playerPos)) {
-                System.out.println("Position taken. Pick a free spot: ");
-                playerPos = scan.nextInt();
-            }
-
+            int playerPos = playerMoves();
             placePiece(playerPos, "player");
 
             String result = checkWinner();
@@ -39,23 +36,15 @@ public class TicTacToe {
                 break;
             }
 
-            Random random = new Random();
-            int cpuPos;
-            do {
-                cpuPos = random.nextInt(9) + 1;
-            }
-            while (playerPositions.contains(cpuPos) || cpuPositions.contains(cpuPos));
-
-            placePiece(cpuPos, "cpu");
-
-            printGameBoard();
+            int CPUpos = CPUmoves();
+            placePiece(CPUpos, "cpu");
 
             result = checkWinner();
             if (result.length() > 0) {
                 System.out.println(result);
+                printGameBoard();
                 break;
             }
-
         }
     }
 
@@ -66,6 +55,30 @@ public class TicTacToe {
             }
             System.out.println();
         }
+    }
+
+    private static int playerMoves() {
+
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter a your placement 1-9: ");
+        int playerPos = scan.nextInt();
+        while (playerPositions.contains(playerPos) || cpuPositions.contains(playerPos)) {
+            System.out.println("Position taken. Pick a free spot: ");
+            playerPos = scan.nextInt();
+        }
+        return playerPos;
+    }
+
+    private static int CPUmoves() {
+
+        Random random = new Random();
+        int cpuPos;
+        do {
+            //setting range between 1 and 9 (without the +1) it is 0 - 8
+            cpuPos = random.nextInt(9) + 1;
+        }
+        while (playerPositions.contains(cpuPos) || cpuPositions.contains(cpuPos));
+        return cpuPos;
     }
 
     private static void placePiece(int pos, String user) {
