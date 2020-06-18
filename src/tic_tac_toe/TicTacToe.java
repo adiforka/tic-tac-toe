@@ -19,25 +19,15 @@ public class TicTacToe {
     public static void main(String[] args) {
 
         playGame();
-
     }
 
     public static void playGame() {
-        printGameBoard();
 
+        printGameBoard();
+        String result;
         while (true) {
             int playerPos = playerMoves();
             placePiece(playerPos, "player");
-
-            String result = checkWinner();
-            if (result.length() > 0) {
-                printResult(result);
-                printGameBoard();
-                break;
-            }
-
-            int CPUpos = CPUmoves();
-            placePiece(CPUpos, "cpu");
 
             result = checkWinner();
             if (result.length() > 0) {
@@ -45,6 +35,20 @@ public class TicTacToe {
                 printGameBoard();
                 break;
             }
+
+            int CPUPos = CPUmoves();
+            placePiece(CPUPos, "cpu");
+
+            //repetitive code but hard to avoid without complicating further
+            result = checkWinner();
+            if (result.length() > 0) {
+                printResult(result);
+                printGameBoard();
+                break;
+            }
+            //awkward, but seems to be the best of all inoptimal places to print
+            //a board again
+            printGameBoard();
         }
     }
 
