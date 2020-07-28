@@ -101,35 +101,15 @@ public class TicTacToe {
         }
 
         switch (pos) {
-            case 1:
-                gameBoard[0][0] = placement;
-                break;
-            case 2:
-                gameBoard[0][2] = placement;
-                break;
-            case 3:
-                gameBoard[0][4] = placement;
-                break;
-            case 4:
-                gameBoard[2][0] = placement;
-                break;
-            case 5:
-                gameBoard[2][2] = placement;
-                break;
-            case 6:
-                gameBoard[2][4] = placement;
-                break;
-            case 7:
-                gameBoard[4][0] = placement;
-                break;
-            case 8:
-                gameBoard[4][2] = placement;
-                break;
-            case 9:
-                gameBoard[4][4] = placement;
-                break;
-            default:
-                break;
+            case 1 -> gameBoard[0][0] = placement;
+            case 2 -> gameBoard[0][2] = placement;
+            case 3 -> gameBoard[0][4] = placement;
+            case 4 -> gameBoard[2][0] = placement;
+            case 5 -> gameBoard[2][2] = placement;
+            case 6 -> gameBoard[2][4] = placement;
+            case 7 -> gameBoard[4][0] = placement;
+            case 8 -> gameBoard[4][2] = placement;
+            case 9 -> gameBoard[4][4] = placement;
         }
     }
 
