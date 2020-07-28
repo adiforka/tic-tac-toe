@@ -46,7 +46,7 @@ public class TicTacToe {
                 printGameBoard();
                 break;
             }
-            //awkward, but seems to be the best of all inoptimal places to print
+            //awkward, but seems to be the best of all non-optimal places to print
             //a board again
             printGameBoard();
         }
