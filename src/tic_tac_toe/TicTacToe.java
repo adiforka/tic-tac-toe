@@ -1,31 +1,37 @@
 package tic_tac_toe;
+
 import java.util.*;
 
 import static java.lang.System.*;
+import static tic_tac_toe.GameResult.*;
 
 public class TicTacToe {
 
-    private static char[][] gameboard = {
-            {' ', '|', ' ', '|', ' '},
-            {'-', '+', '-', '+', '-'},
-            {' ', '|', ' ', '|', ' '},
-            {'-', '+', '-', '+', '-'},
-            {' ', '|', ' ', '|', ' '},
-    };
-    private static final List<Integer> playerPositions = new ArrayList<>();
-    private static final List<Integer> cpuPositions = new ArrayList<>();
+    private static final Set<Set<Integer>> WINNING_SEQUENCES = Set.of(
+            Set.of(1, 2, 3), Set.of(4, 5, 6), Set.of(7, 8, 9),
+            Set.of(1, 4, 7), Set.of(2, 5, 8), Set.of(3, 6, 9),
+            Set.of(1, 5, 9), Set.of(3, 5, 7)
+    );
+
+    private final Set<Integer> PLAYER_POSITIONS;
+    private final Set<Integer> CPU_POSITIONS;
+    private final char[][] GAMEBOARD;
 
 
-    public static void main(String[] args) {
-
-        for (int i = 0; i < 10; i++) {
-            out.printf("GAME NUMBER %d\n", i + 1);
-            playGame();
-        }
+    public TicTacToe() {
+        GAMEBOARD = new char[][]{
+                {' ', '|', ' ', '|', ' '},
+                {'-', '+', '-', '+', '-'},
+                {' ', '|', ' ', '|', ' '},
+                {'-', '+', '-', '+', '-'},
+                {' ', '|', ' ', '|', ' '},
+        };
+        PLAYER_POSITIONS = new HashSet<>();
+        CPU_POSITIONS = new HashSet<>();
     }
 
-    public static void playGame() {
-        String result;
+    public GameResult playGame() {
+        GameResult result;
         boolean playerTurn = isPlayerTurn();
         while (true) {
             if (playerTurn) {
@@ -37,11 +43,12 @@ public class TicTacToe {
             playerTurn = !playerTurn;
 
             result = checkWinner();
-            if (result.length() > 0) {
-                out.println(result);
+            if (!result.equals(NO_RESULT)) {
+                out.println(result.toString());
+
                 printGameBoard();
-                cleanUp();
-                break;
+                clearPositionLists();
+                return result;
             }
 
             if (playerTurn) {
@@ -53,17 +60,17 @@ public class TicTacToe {
             playerTurn = !playerTurn;
 
             result = checkWinner();
-            if (result.length() > 0) {
-                out.println(result);
+            if (!result.equals(NO_RESULT)) {
+                out.println(result.toString());
                 printGameBoard();
-                cleanUp();
-                break;
+                clearPositionLists();
+                return result;
             }
         }
     }
 
-    private static void printGameBoard() {
-        for (char[] row : gameboard) {
+    private void printGameBoard() {
+        for (char[] row : GAMEBOARD) {
             for (char ch : row) {
                 out.print(ch + " ");
             }
@@ -72,16 +79,16 @@ public class TicTacToe {
         out.println();
     }
 
-    private static boolean isPlayerTurn() {
+    private boolean isPlayerTurn() {
         int val = new Random().nextInt(2);
         return val > 0;
     }
 
-    private static void playerMoves() {
+    private void playerMoves() {
         Scanner scanner = new Scanner(in);
         out.println("Enter placement in a free position 1-9");
         int position = scanner.nextInt();
-        while (playerPositions.contains(position) || cpuPositions.contains(position)) {
+        while (PLAYER_POSITIONS.contains(position) || CPU_POSITIONS.contains(position)) {
             out.println("Position taken. Enter placement in a free position 1-9");
             position = scanner.nextInt();
         }
@@ -89,81 +96,52 @@ public class TicTacToe {
         makePlacement(position, "Player");
     }
 
-    private static void cpuMoves() {
+    private void cpuMoves() {
         var random = new Random(1);
         int position;
         do {
             position = random.nextInt(10);
-        } while (cpuPositions.contains(position) || playerPositions.contains(position));
+        } while (CPU_POSITIONS.contains(position) || PLAYER_POSITIONS.contains(position));
 
         makePlacement(position, "CPU");
     }
 
-    private static void makePlacement(int position, String user) {
-
+    private void makePlacement(int position, String user) {
         char placement;
         if (user.equalsIgnoreCase("Player")) {
             placement = '0';
-            playerPositions.add(position);
+            PLAYER_POSITIONS.add(position);
         } else {
             placement = 'X';
-            cpuPositions.add(position);
+            CPU_POSITIONS.add(position);
         }
 
         switch (position) {
-            case 1 -> gameboard[0][0] = placement;
-            case 2 -> gameboard[0][2] = placement;
-            case 3 -> gameboard[0][4] = placement;
-            case 4 -> gameboard[2][0] = placement;
-            case 5 -> gameboard[2][2] = placement;
-            case 6 -> gameboard[2][4] = placement;
-            case 7 -> gameboard[4][0] = placement;
-            case 8 -> gameboard[4][2] = placement;
-            case 9 -> gameboard[4][4] = placement;
+            case 1 -> GAMEBOARD[0][0] = placement;
+            case 2 -> GAMEBOARD[0][2] = placement;
+            case 3 -> GAMEBOARD[0][4] = placement;
+            case 4 -> GAMEBOARD[2][0] = placement;
+            case 5 -> GAMEBOARD[2][2] = placement;
+            case 6 -> GAMEBOARD[2][4] = placement;
+            case 7 -> GAMEBOARD[4][0] = placement;
+            case 8 -> GAMEBOARD[4][2] = placement;
+            case 9 -> GAMEBOARD[4][4] = placement;
         }
     }
 
-    private static String checkWinner() {
-        List<List<Integer>> winningConditions = Arrays.asList(
-                Arrays.asList(1, 2, 3),
-                Arrays.asList(4, 5, 6),
-                Arrays.asList(7, 8, 9),
-                Arrays.asList(1, 4, 7),
-                Arrays.asList(2, 5, 8),
-                Arrays.asList(3, 6, 9),
-                Arrays.asList(1, 5, 9),
-                Arrays.asList(3, 5, 7)
-        );
-
-        for (List<Integer> condition : winningConditions) {
-            if (playerPositions.containsAll(condition)) {
-                return "You win!";
-            } else if (cpuPositions.containsAll(condition)) {
-                return "Cpu wins!";
-            } else if (cpuPositions.size() + playerPositions.size() == 9) {
-                return "It's a tie!";
-            }
-        }
-        return "";
+    private GameResult checkWinner() {
+        return WINNING_SEQUENCES.stream().anyMatch(PLAYER_POSITIONS::containsAll) ?
+                PLAYER_WINS : WINNING_SEQUENCES.stream().anyMatch(CPU_POSITIONS::containsAll) ?
+                CPU_WINS : fieldsTaken() == 9 ?
+                ITS_A_TIE : NO_RESULT;
     }
 
-    private static void cleanUp() {
-        restoreGameBoard();
-        clearPositionLists();
+    private int fieldsTaken() {
+        return CPU_POSITIONS.size() + PLAYER_POSITIONS.size();
     }
 
-    private static void restoreGameBoard() {
-        gameboard = new char[][]{
-                {' ', '|', ' ', '|', ' '},
-                {'-', '+', '-', '+', '-'},
-                {' ', '|', ' ', '|', ' '},
-                {'-', '+', '-', '+', '-'},
-                {' ', '|', ' ', '|', ' '},
-        };
-    }
-
-    private static void clearPositionLists() {
-        playerPositions.clear();
-        cpuPositions.clear();
+    private void clearPositionLists() {
+        PLAYER_POSITIONS.clear();
+        CPU_POSITIONS.clear();
     }
 }
